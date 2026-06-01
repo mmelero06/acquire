@@ -6,7 +6,7 @@ const acquireController = require('../controllers/acquireController');
 
 // Rutas del servicio ACQUIRE
 router.get('/health', acquireController.health);
-router.post('/acquire', acquireController.saveData);
+router.post('/data', acquireController.createData);
 router.get('/data', acquireController.getAllData);
 router.get('/data/:id', acquireController.getDataById);
 

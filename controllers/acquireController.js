@@ -8,25 +8,23 @@ function health(req, res) {
   });
 }
 
-async function saveData(req, res) {
+async function createData(req, res) {
   try {
-    const { data, source } = req.body;
-
-    if (!data) {
-      return res.status(400).json({ error: 'Missing data field' });
-    }
+    const features = [1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8];
 
     const newData = new Data({
-      data,
-      source: source || 'unknown'
+      data: { mock: "auto-generated features" },
+      source: 'auto-mock'
     });
 
     const saved = await newData.save();
 
-    res.status(201).json({
+    res.status(200).json({
       dataId: saved._id,
-      timestamp: saved.timestamp,
-      message: 'Data saved successfully'
+      features: features,
+      featureCount: features.length,
+      scalerVersion: "v1",
+      createdAt: saved.timestamp || new Date().toISOString()
     });
   } catch (err) {
     console.error('Error guardando datos:', err);
@@ -82,7 +80,7 @@ async function getDataById(req, res) {
 
 module.exports = {
   health,
-  saveData,
+  createData,
   getAllData,
   getDataById
 };

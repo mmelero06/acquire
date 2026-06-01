@@ -2,7 +2,7 @@
 FROM node:22-slim
 
 # Directorio de trabajo dentro del contenedor
-WORKDIR usr/src/app
+WORKDIR /usr/src/app
 
 # Copiamos primero manifiestos para cachear dependencias
 COPY package*.json ./
