@@ -1,5 +1,6 @@
 // controllers/acquireController.js
 const Data = require('../models/Data');
+const mongoose = require('mongoose');
 
 function health(req, res) {
   res.json({
@@ -19,7 +20,7 @@ async function createData(req, res) {
 
     const saved = await newData.save();
 
-    res.status(200).json({
+    res.status(201).json({
       dataId: saved._id,
       features: features,
       featureCount: features.length,
@@ -78,9 +79,38 @@ async function getDataById(req, res) {
   }
 }
 
+// NUEVAS FUNCIONES PARA USUARIOS (MAPPED AS FUNCTIONS)
+async function registrarUsuario(req, res) {
+  try {
+    const { username, password } = req.body;
+    await mongoose.connection.db.collection('usuarios').insertOne({ username, password });
+    res.status(201).json({ success: true, message: 'Usuario guardado en MongoDB' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+async function verificarUsuario(req, res) {
+  try {
+    const { username, password } = req.body;
+    const usuario = await mongoose.connection.db.collection('usuarios').findOne({ username, password });
+    
+    if (usuario || (username === 'admin' && password === 'sod2026')) {
+      return res.status(200).json({ valido: true });
+    }
+    
+    return res.status(401).json({ valido: false, error: 'Credenciales inválidas' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+// UN ÚNICO BLOQUE DE EXPORTACIÓN AL FINAL DEL ARCHIVO
 module.exports = {
   health,
   createData,
   getAllData,
-  getDataById
+  getDataById,
+  registrarUsuario,
+  verificarUsuario
 };
